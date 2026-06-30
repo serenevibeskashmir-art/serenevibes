@@ -1,1 +1,9 @@
 
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.onrender.serenevibes.twa",
+    "sha256_cert_fingerprints": ["4F:66:66:76:4F:E6:01:3C:98:DA:C4:32:8D:58:93:9C:FE:D6:FA:CC:CD:A8:FE:72:06:11:63:1D:5B:71:88:8A"]
+  }
+}]
