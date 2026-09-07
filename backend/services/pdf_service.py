@@ -1434,14 +1434,29 @@ def generate_pdf(itinerary_data: dict) -> str:
             selected_hotel_ids.append(str(hid))
 
     if selected_hotel_ids:
-        story.append(SectionTitle(usable_w, "HOTEL REFERENCE PHOTOS", icon=""))
-        story.append(Spacer(1, 4*mm))
+        # ── Dynamic photo height so ALL hotels always fit on ONE page ─────
+        # A4 usable body height = 257mm (page 297 - top margin 18 - bottom 22).
+        # Fixed overhead: PageBreak resets to top, SectionTitle=12mm, spacer=4mm → 16mm
+        # Per hotel: header bar=8mm + spacer below=3mm = 11mm overhead each strip.
+        # Remaining mm shared equally across all photo slots.
+        # Hard floor 28mm (still legible), hard ceiling 52mm.
+        _n = len(selected_hotel_ids)
+        _overhead_total = 16 + _n * 11   # title block + per-hotel overheads
+        _photo_h_mm = max(28, min(52, (257 - _overhead_total) / _n))
+
+        story.append(PageBreak())
+        photo_block = [
+            SectionTitle(usable_w, "HOTEL REFERENCE PHOTOS", icon=""),
+            Spacer(1, 4*mm),
+        ]
         for hid in selected_hotel_ids:
             info = HOTEL_LOOKUP[hid]
-            story.append(HotelPhotoStrip(
-                usable_w, info["name"], info["place"], info.get("images", [])
+            photo_block.append(HotelPhotoStrip(
+                usable_w, info["name"], info["place"], info.get("images", []),
+                photo_h=_photo_h_mm * mm
             ))
-            story.append(Spacer(1, 5*mm))
+            photo_block.append(Spacer(1, 3*mm))
+        story.append(KeepTogether(photo_block))
 
     # ── 4. Hotel Assignments Table ────────────────────────────────────────────
     story.append(PageBreak())
