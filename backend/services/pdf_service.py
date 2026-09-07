@@ -17,6 +17,10 @@ from reportlab.graphics.shapes import Drawing, Rect, String, Line, Circle
 from reportlab.graphics import renderPDF
 import datetime
 
+# India Standard Time is a fixed UTC+5:30 offset (no DST), so a simple
+# timezone object is sufficient and avoids an extra dependency (e.g. pytz/zoneinfo tzdata).
+IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30), name="IST")
+
 # ─── Brand Palette ───────────────────────────────────────────────────────────
 NAVY      = colors.HexColor("#1e293b")
 NAVY_DEEP = colors.HexColor("#0f172a")
@@ -1485,14 +1489,33 @@ def generate_pdf(itinerary_data: dict) -> str:
         if isinstance(hotel_id, dict):
             hotel_id = hotel_id.get("id")
 
+        overnight_raw = str(day_info.get("overnight_stay", "") or "").strip()
+        title_raw     = str(day_info.get("title", "") or "").strip()
+        route_raw     = str(day_info.get("transit_route", "") or "").strip()
+        dep_signal    = f"{title_raw} {route_raw}".lower()
+
+        # A departure day has no hotel night: either explicitly flagged as
+        # "departure" in the title/route, or there is simply no overnight
+        # stay recorded for that day.
+        is_departure_day = (
+            "departure" in dep_signal
+            or "airport drop" in dep_signal
+            or not overnight_raw
+            or overnight_raw.lower() == "departure"
+        )
+
         if hotel_id and str(hotel_id) in HOTEL_LOOKUP:
             match = HOTEL_LOOKUP[str(hotel_id)]
             hotel_name  = match["name"]
             hotel_place = match["place"]
+        elif is_departure_day:
+            hotel_name  = "Departure"
+            hotel_place = "-"
         else:
-            overnight = day_info.get("overnight_stay", "")
             hotel_name  = "To be confirmed"
-            hotel_place = clean(str(overnight)) if overnight else "-"
+            hotel_place = clean(str(overnight_raw)) if overnight_raw else "-"
+
+        meal_plan = "-" if is_departure_day else "Breakfast &amp; Dinner"
 
         hotel_rows.append([
             Paragraph(f"<b>Day {idx}</b>", ParagraphStyle("dc", fontName="Helvetica-Bold",
@@ -1500,7 +1523,7 @@ def generate_pdf(itinerary_data: dict) -> str:
             Paragraph(clean(hotel_name), styles["hotel_cell_bold"]),
             Paragraph(clean(hotel_place), ParagraphStyle("hp", fontName="Helvetica",
                       fontSize=8, textColor=GRAY_600, alignment=TA_CENTER)),
-            Paragraph("Breakfast &amp; Dinner", ParagraphStyle("mp", fontName="Helvetica",
+            Paragraph(meal_plan, ParagraphStyle("mp", fontName="Helvetica",
                       fontSize=8, textColor=TEAL, alignment=TA_CENTER)),
         ])
 
@@ -2109,7 +2132,7 @@ def generate_pdf(itinerary_data: dict) -> str:
     # Quote validity notice
     validity_st = ParagraphStyle("vld", fontName="Helvetica-Oblique", fontSize=7.5,
                                  textColor=GRAY_400, alignment=TA_CENTER)
-    ts_gen = datetime.datetime.now()
+    ts_gen = datetime.datetime.now(IST)
     ts_valid = (ts_gen + datetime.timedelta(days=7)).strftime("%d %b %Y")
     story.append(Paragraph(
         f"This quotation is valid until <b>{ts_valid}</b>. Rates are subject to change after this date "
@@ -2119,7 +2142,7 @@ def generate_pdf(itinerary_data: dict) -> str:
     story.append(Spacer(1, 4*mm))
 
     # Timestamp
-    ts = ts_gen.strftime("%d %b %Y, %I:%M %p")
+    ts = ts_gen.strftime("%d %b %Y, %I:%M %p") + " IST"
     story.append(HRFlowable(width=usable_w, thickness=0.4, color=GRAY_200))
     story.append(Spacer(1, 3*mm))
     story.append(Paragraph(
