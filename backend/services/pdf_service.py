@@ -65,19 +65,28 @@ _IMAGE_CACHE = {}
 
 def fetch_image_reader(src):
     """
-    Load an image (URL or local file path) into a ReportLab ImageReader.
+    Load an image (URL, base64 data URL, or local file path) into a ReportLab ImageReader.
     Returns None on any failure so a bad/missing photo never breaks the PDF.
     Results are cached per-source for the lifetime of the process so the same
     hotel photo isn't re-downloaded for every day it appears on.
     """
     if not src:
         return None
-    if src in _IMAGE_CACHE:
-        return _IMAGE_CACHE[src]
+    # Use a short cache key for base64 strings (they can be huge)
+    cache_key = src if len(src) < 500 else src[:100] + str(len(src))
+    if cache_key in _IMAGE_CACHE:
+        return _IMAGE_CACHE[cache_key]
 
     reader = None
     try:
-        if src.startswith("http://") or src.startswith("https://"):
+        if src.startswith("data:"):
+            # Base64 data URL — e.g. "data:image/jpeg;base64,/9j/4AAQ..."
+            # This is what the admin panel stores when photos are uploaded from device.
+            import base64 as _b64
+            header, encoded = src.split(",", 1)
+            img_bytes = _b64.b64decode(encoded)
+            reader = ImageReader(io.BytesIO(img_bytes))
+        elif src.startswith("http://") or src.startswith("https://"):
             resp = requests.get(src, timeout=8, headers={"User-Agent": "Mozilla/5.0"})
             resp.raise_for_status()
             reader = ImageReader(io.BytesIO(resp.content))
@@ -87,10 +96,10 @@ def fetch_image_reader(src):
             if p.exists():
                 reader = ImageReader(str(p))
     except Exception as e:
-        print(f"Hotel image fetch failed for '{src}': {e}")
+        print(f"Hotel image fetch failed for '{src[:80]}...': {e}")
         reader = None
 
-    _IMAGE_CACHE[src] = reader
+    _IMAGE_CACHE[cache_key] = reader
     return reader
 
 # ─── Custom Flowables ────────────────────────────────────────────────────────
@@ -1394,24 +1403,38 @@ def generate_pdf(itinerary_data: dict) -> str:
 
     # ── Merge admin-saved hotel images into HOTEL_LOOKUP ──────────────────
     # The admin panel stores photos in data/hotel_images.json.
-    # Load them here and override the (possibly empty) hardcoded image lists
-    # so that any photo uploaded via the Hotel Photo Manager appears in the PDF.
+    # Photos uploaded from device are stored as base64 data URLs;
+    # photos added by URL are stored as https:// strings.
+    # Both are handled by fetch_image_reader() above.
     try:
         import json as _json
-        _img_file = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-            "..", "data", "hotel_images.json"
-        )
-        _img_file = os.path.normpath(_img_file)
-        if not os.path.exists(_img_file):
-            # Fallback: look relative to cwd (production layout)
-            _img_file = os.path.join(os.getcwd(), "data", "hotel_images.json")
-        if os.path.exists(_img_file):
+        # Try every plausible location for hotel_images.json
+        _this_file = os.path.abspath(__file__)                      # .../backend/services/pdf_service.py
+        _services_dir = os.path.dirname(_this_file)                 # .../backend/services/
+        _backend_dir  = os.path.dirname(_services_dir)              # .../backend/
+        _project_dir  = os.path.dirname(_backend_dir)               # project root
+        _candidates = [
+            os.path.join(_project_dir, "data", "hotel_images.json"),   # root/data/ (most likely)
+            os.path.join(os.getcwd(), "data", "hotel_images.json"),      # cwd/data/
+            os.path.join(_backend_dir, "data", "hotel_images.json"),     # backend/data/
+        ]
+        _img_file = None
+        for _c in _candidates:
+            if os.path.exists(_c):
+                _img_file = _c
+                print(f"hotel_images.json found at: {_c}")
+                break
+        if not _img_file:
+            print(f"hotel_images.json not found. Searched: {_candidates}")
+        if _img_file:
             with open(_img_file, "r") as _f:
                 _saved_images = _json.load(_f)
+            _loaded = 0
             for _hid, _imgs in _saved_images.items():
                 if _hid in HOTEL_LOOKUP and isinstance(_imgs, list) and _imgs:
                     HOTEL_LOOKUP[_hid]["images"] = _imgs
+                    _loaded += 1
+            print(f"Loaded hotel images for {_loaded} hotel(s) from {_img_file}")
     except Exception as _e:
         print(f"Warning: could not load hotel_images.json: {_e}")
 
