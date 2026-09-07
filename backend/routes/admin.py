@@ -1,28 +1,33 @@
 import json
-import os
 
 from flask import Blueprint, jsonify, request
 
 from backend.auth import admin_required, create_admin_token
 from backend.config import Config
+from backend.extensions import db
+from backend.models import HotelImages
 
 admin_bp = Blueprint("admin", __name__)
 
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-HOTEL_IMAGES_FILE = os.path.join(ROOT_DIR, "data", "hotel_images.json")
 
-
-def _load_hotel_images():
-    if not os.path.exists(HOTEL_IMAGES_FILE):
-        return {}
-    with open(HOTEL_IMAGES_FILE, "r") as f:
-        return json.load(f)
+def _load_hotel_images() -> dict:
+    """Return {hotel_id: [img_src, ...]} for all hotels stored in the DB."""
+    rows = HotelImages.query.all()
+    return {row.hotel_id: json.loads(row.images_json) for row in rows}
 
 
 def _save_hotel_images(data: dict):
-    os.makedirs(os.path.dirname(HOTEL_IMAGES_FILE), exist_ok=True)
-    with open(HOTEL_IMAGES_FILE, "w") as f:
-        json.dump(data, f, indent=2)
+    """
+    Upsert hotel image lists into the DB.
+    data = {hotel_id: [img_src, ...], ...}
+    """
+    for hotel_id, images in data.items():
+        row = HotelImages.query.filter_by(hotel_id=hotel_id).first()
+        if row:
+            row.images_json = json.dumps(images)
+        else:
+            db.session.add(HotelImages(hotel_id=hotel_id, images_json=json.dumps(images)))
+    db.session.commit()
 
 
 @admin_bp.post("/login")
