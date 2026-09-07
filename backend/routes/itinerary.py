@@ -76,6 +76,34 @@ def _vehicle_type(adults):
     return "Tempo/Traveler"
 
 
+def _build_default_timeline(days):
+    """
+    Build a default timeline of exactly `days` entries where the LAST day
+    is always the departure day, no matter how short the trip is.
+
+    DEFAULT_TIMELINE's final entry is the departure template. Everything
+    before it is regular sightseeing content. For a trip of length `days`
+    we take the first (days - 1) sightseeing days and then append the
+    departure day, renumbered to be the actual last day.
+    """
+    days = max(days, 1)
+    sightseeing_days = DEFAULT_TIMELINE[:-1]
+    departure_template = DEFAULT_TIMELINE[-1]
+
+    if days == 1:
+        # Single-day trip: nothing but arrival/departure.
+        timeline = []
+    else:
+        timeline = [dict(d) for d in sightseeing_days[: days - 1]]
+
+    departure_day = dict(departure_template)
+    departure_day["day"] = days
+    departure_day["date"] = f"Day {days} Plan"
+    timeline.append(departure_day)
+
+    return timeline
+
+
 @itinerary_bp.route("/generate", methods=["POST"])
 @admin_required
 def generate_custom_itinerary():
@@ -121,11 +149,11 @@ def generate_custom_itinerary():
         },
         "logistics": {"assigned_vehicle": vehicle},
         "financial_summary": {"total_payable_inr": calculated_cost},
-        "timeline": data.get("timeline") or DEFAULT_TIMELINE[:days],
+        "timeline": data.get("timeline") or _build_default_timeline(days),
     }
 
     if not data.get("timeline"):
-        response_payload["timeline"] = DEFAULT_TIMELINE[:days]
+        response_payload["timeline"] = _build_default_timeline(days)
 
     response_payload["itinerary_timeline"] = response_payload["timeline"]
 
