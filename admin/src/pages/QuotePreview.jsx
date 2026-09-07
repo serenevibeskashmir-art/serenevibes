@@ -22,6 +22,8 @@ const TRANSIT_OPTIONS = [
   "Airport Pickup and Local Sightseeing: Overnight Srinagar",
   "Srinagar Local Sightseeing: Overnight Srinagar",
   "Srinagar to Gulmarg: Overnight Srinagar",
+  "Srinagar to Gulmarg: Overnight Gulmarg",
+  "Gulmarg Stay: Overnight Gulmarg",
   "Srinagar to Pahalgam: Overnight Pahalgam",
   "Pahalgam to Srinagar: Overnight Srinagar",
   "Srinagar to Sonamarg: Overnight Srinagar",
@@ -43,6 +45,12 @@ const ROUTE_SCHEDULE_TEMPLATES = {
     { time_slot: "***", description: "Enjoy the famous Gondola Cable Car Ride (Phase 1 & Phase 2)." },
     { time_slot: "***", description: "Drive back to Srinagar for overnight stay." }
   ],
+  "Srinagar to Gulmarg: Overnight Gulmarg": [
+    { time_slot: "***", description: "Gulmarg, the Meadow of Flowers, is a hill station famous for its alpine meadows and one of the world's highest cable car rides." },
+    { time_slot: "***", description: "Drive from Srinagar to Gulmarg (Meadow of Flowers)." },
+    { time_slot: "***", description: "Enjoy the famous Gondola Cable Car Ride (Phase 1 & Phase 2)." },
+    { time_slot: "***", description: "Check-in at your Gulmarg hotel and enjoy the night in the bed of flowers." }
+  ],
   "Srinagar to Pahalgam: Overnight Pahalgam": [
     { time_slot: "***", description: "Pahalgam, the Valley of Shepherds, is reached via Pampore's saffron fields and the ancient Avantipur temple ruins." },
     { time_slot: "***", description: "Proceed towards Pahalgam past the saffron fields of Pampore, the marvelous ruins of Awantipur and the village of Bijbehara which remains famous as the breadbasket of Kashmir." },
@@ -60,6 +68,12 @@ const ROUTE_SCHEDULE_TEMPLATES = {
     { time_slot: "***", description: "Day excursion to Sonamarg (Meadow of Gold) along the Sindh River." },
     { time_slot: "***", description: "Visit Thajiwas Glacier via pony or local union vehicle." },
     { time_slot: "***", description: "Return drive back to Srinagar for overnight stay." }
+  ],
+  "Gulmarg Stay: Overnight Gulmarg": [
+    { time_slot: "***", description: "Another day to explore Gulmarg's alpine meadows and world-class attractions at your own pace." },
+    { time_slot: "***", description: "Enjoy the famous Gondola Cable Car Ride (Phase 1 & Phase 2) if not done the previous day." },
+    { time_slot: "***", description: "Explore the Gulmarg Biosphere Reserve on a leisurely nature walk." },
+    { time_slot: "***", description: "Return to your Gulmarg hotel for overnight stay." }
   ],
   "Gulmarg to Pahalgam: Overnight Pahalgam": [
     { time_slot: "***", description: "This route connects Kashmir's premier hill station to the Valley of Shepherds via scenic village roads." },
@@ -616,7 +630,7 @@ export default function QuotePreview({ quote }) {
 
           {/* Hotel cards */}
           <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "8px" }}>
-            {HOTEL_KB[getHotelGroup(timeline[activeDay].overnight_stay)].map((hotel) => {
+            {(HOTEL_KB[getHotelGroup(timeline[activeDay].overnight_stay)] || HOTEL_KB["srinagar"]).map((hotel) => {
               const isSelected = hotelSelections[activeDay] === hotel.id;
               return (
                 <div key={hotel.id} onClick={() => setHotelSelections(prev => ({ ...prev, [activeDay]: hotel.id }))} style={{ padding: "8px 14px", borderRadius: "6px", border: isSelected ? "2px solid #6366f1" : "1px solid #cbd5e1", backgroundColor: isSelected ? "#f5f3ff" : "#fff", cursor: "pointer", fontSize: "0.85rem", fontWeight: isSelected ? "700" : "500", color: isSelected ? "#4338ca" : "#334155", transition: "all 0.15s" }}>
