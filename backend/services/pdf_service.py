@@ -1402,41 +1402,22 @@ def generate_pdf(itinerary_data: dict) -> str:
     }
 
     # ── Merge admin-saved hotel images into HOTEL_LOOKUP ──────────────────
-    # The admin panel stores photos in data/hotel_images.json.
-    # Photos uploaded from device are stored as base64 data URLs;
-    # photos added by URL are stored as https:// strings.
-    # Both are handled by fetch_image_reader() above.
+    # Photos are stored permanently in the database (HotelImages model).
+    # Photos uploaded from device are base64 data URLs; URL-added photos
+    # are https:// strings. Both are handled by fetch_image_reader() above.
     try:
+        from backend.models import HotelImages as _HotelImages
         import json as _json
-        # Try every plausible location for hotel_images.json
-        _this_file = os.path.abspath(__file__)                      # .../backend/services/pdf_service.py
-        _services_dir = os.path.dirname(_this_file)                 # .../backend/services/
-        _backend_dir  = os.path.dirname(_services_dir)              # .../backend/
-        _project_dir  = os.path.dirname(_backend_dir)               # project root
-        _candidates = [
-            os.path.join(_project_dir, "data", "hotel_images.json"),   # root/data/ (most likely)
-            os.path.join(os.getcwd(), "data", "hotel_images.json"),      # cwd/data/
-            os.path.join(_backend_dir, "data", "hotel_images.json"),     # backend/data/
-        ]
-        _img_file = None
-        for _c in _candidates:
-            if os.path.exists(_c):
-                _img_file = _c
-                print(f"hotel_images.json found at: {_c}")
-                break
-        if not _img_file:
-            print(f"hotel_images.json not found. Searched: {_candidates}")
-        if _img_file:
-            with open(_img_file, "r") as _f:
-                _saved_images = _json.load(_f)
-            _loaded = 0
-            for _hid, _imgs in _saved_images.items():
-                if _hid in HOTEL_LOOKUP and isinstance(_imgs, list) and _imgs:
-                    HOTEL_LOOKUP[_hid]["images"] = _imgs
-                    _loaded += 1
-            print(f"Loaded hotel images for {_loaded} hotel(s) from {_img_file}")
+        _rows = _HotelImages.query.all()
+        _loaded = 0
+        for _row in _rows:
+            _imgs = _json.loads(_row.images_json)
+            if _row.hotel_id in HOTEL_LOOKUP and isinstance(_imgs, list) and _imgs:
+                HOTEL_LOOKUP[_row.hotel_id]["images"] = _imgs
+                _loaded += 1
+        print(f"Loaded hotel images for {_loaded} hotel(s) from database")
     except Exception as _e:
-        print(f"Warning: could not load hotel_images.json: {_e}")
+        print(f"Warning: could not load hotel images from DB: {_e}")
 
     hotel_selections = itinerary_data.get("selected_hotels") or \
                        itinerary_data.get("hotelSelections") or {}
