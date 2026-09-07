@@ -1392,6 +1392,29 @@ def generate_pdf(itinerary_data: dict) -> str:
         "hmsp": {"name": "Hotel Marina By Stay Pattern",   "place": "Gulmarg",  "images": []},
     }
 
+    # ── Merge admin-saved hotel images into HOTEL_LOOKUP ──────────────────
+    # The admin panel stores photos in data/hotel_images.json.
+    # Load them here and override the (possibly empty) hardcoded image lists
+    # so that any photo uploaded via the Hotel Photo Manager appears in the PDF.
+    try:
+        import json as _json
+        _img_file = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "..", "data", "hotel_images.json"
+        )
+        _img_file = os.path.normpath(_img_file)
+        if not os.path.exists(_img_file):
+            # Fallback: look relative to cwd (production layout)
+            _img_file = os.path.join(os.getcwd(), "data", "hotel_images.json")
+        if os.path.exists(_img_file):
+            with open(_img_file, "r") as _f:
+                _saved_images = _json.load(_f)
+            for _hid, _imgs in _saved_images.items():
+                if _hid in HOTEL_LOOKUP and isinstance(_imgs, list) and _imgs:
+                    HOTEL_LOOKUP[_hid]["images"] = _imgs
+    except Exception as _e:
+        print(f"Warning: could not load hotel_images.json: {_e}")
+
     hotel_selections = itinerary_data.get("selected_hotels") or \
                        itinerary_data.get("hotelSelections") or {}
     if not isinstance(hotel_selections, dict):
