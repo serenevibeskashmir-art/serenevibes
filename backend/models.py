@@ -35,3 +35,16 @@ class Booking(db.Model):
     status = db.Column(db.String(50), default="draft")
     pdf_path = db.Column(db.Text)
     email_status = db.Column(db.String(50), default="not_sent")
+
+
+class HotelImages(db.Model):
+    """
+    Stores reference photos for each hotel, keyed by hotel ID (e.g. 'htk', 'sghb').
+    images_json holds a JSON array of image sources — either https:// URLs or
+    base64 data URLs (data:image/jpeg;base64,...) from device uploads.
+    Stored in the database so photos survive Render restarts and redeploys.
+    """
+    __tablename__ = "hotel_images"
+    id        = db.Column(db.Integer, primary_key=True)
+    hotel_id  = db.Column(db.String(20), unique=True, nullable=False, index=True)
+    images_json = db.Column(db.Text, nullable=False, default="[]")
