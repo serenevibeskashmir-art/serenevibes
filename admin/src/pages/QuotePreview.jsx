@@ -69,11 +69,11 @@ const ROUTE_SCHEDULE_TEMPLATES = {
     { time_slot: "***", description: "Visit Thajiwas Glacier via pony or local union vehicle." },
     { time_slot: "***", description: "Return drive back to Srinagar for overnight stay." }
   ],
-  "Gulmarg Stay: Overnight Gulmarg": [
-    { time_slot: "***", description: "Another day to explore Gulmarg's alpine meadows and world-class attractions at your own pace." },
-    { time_slot: "***", description: "Enjoy the famous Gondola Cable Car Ride (Phase 1 & Phase 2) if not done the previous day." },
-    { time_slot: "***", description: "Explore the Gulmarg Biosphere Reserve on a leisurely nature walk." },
-    { time_slot: "***", description: "Return to your Gulmarg hotel for overnight stay." }
+  "Gulmarg to Srinagar: Overnight Srinagar": [
+    { time_slot: "***", description: "Another day to explore Srinagar's beautiful lakes, gardens, heritage sites, and famous attractions at your own pace." },
+    { time_slot: "***", description: "Enjoy a peaceful Shikara Ride on the famous Dal Lake and admire the surrounding Himalayan scenery." },
+    { time_slot: "***", description: "Explore Mughal Gardens including Nishat Bagh and Shalimar Bagh, followed by a leisurely visit to Pari Mahal." },
+    { time_slot: "***", description: "Return to your Srinagar hotel for overnight stay." }
   ],
   "Gulmarg to Pahalgam: Overnight Pahalgam": [
     { time_slot: "***", description: "This route connects Kashmir's premier hill station to the Valley of Shepherds via scenic village roads." },
