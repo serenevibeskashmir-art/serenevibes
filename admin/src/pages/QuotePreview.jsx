@@ -22,16 +22,15 @@ const TRANSIT_OPTIONS = [
   "Airport Pickup and Local Sightseeing: Overnight Srinagar",
   "Srinagar Local Sightseeing: Overnight Srinagar",
   "Srinagar to Gulmarg: Overnight Srinagar",
-  "Srinagar to Gulmarg: Overnight Gulmarg",  
+  "Srinagar to Gulmarg: Overnight Gulmarg",
+  "Gulmarg Stay: Overnight Gulmarg",
   "Srinagar to Pahalgam: Overnight Pahalgam",
-  "Srinagar to Doodhpathri: Overnight Srinagar",
-  "Srinagar to Sonamarg: Overnight Srinagar",
-  "Srinagar to Sonamarg: Overnight Sonamarg",
   "Pahalgam to Srinagar: Overnight Srinagar",
-  "Pahalgam Sightseeing: Overnight Pahalgam",
-  "Sonamarg to Gulmarg: Overnight Gulmarg",
+  "Srinagar to Sonamarg: Overnight Srinagar",
   "Gulmarg to Pahalgam: Overnight Pahalgam",
-  "Gulmarg to Srinagar: Overnight Srinagar",  
+  "Gulmarg to Srinagar: Overnight Srinagar",
+  "Sonamarg to Gulmarg: Overnight Gulmarg",
+  "Srinagar to Doodhpathri: Overnight Srinagar",
   "Airport Drop-Departure"
 ];
 
@@ -100,12 +99,6 @@ const ROUTE_SCHEDULE_TEMPLATES = {
     { time_slot: "***", description: "Explore Gulmarg's picturesque meadows and enjoy leisure time surrounded by stunning mountain views." },
     { time_slot: "***", description: "Check in to your Gulmarg hotel and relax for an overnight stay." }
   ],
-  "Pahalgam Sightseeing: Overnight Pahalgam": [
-    { "time_slot": "***", "description": "After breakfast, continue with remaining sighseeing in Pahalgam, a picturesque valley surrounded by lush green meadows, pine forests, and snow-capped mountains." },
-    { "time_slot": "***", "description": "Explore the scenic beauty of Pahalgam and enjoy the peaceful views along the Lidder River." },
-    { "time_slot": "***", "description": "Visit popular attractions such as Betaab Valley, Aru Valley, and Chandanwari, subject to local vehicle and weather conditions." },
-    { "time_slot": "***", "description": "Enjoy leisure time in Pahalgam for a nature walk, photography, or optional pony ride before returning to the hotel for an overnight stay." }
-],
   "Airport Drop-Departure": [
     { time_slot: "Departure", description: "Your Kashmir tour concludes with departure from Srinagar International Airport." },
     { time_slot: "***", description: "Breakfast at hotel and complete check-out formalities." },
@@ -142,10 +135,10 @@ const HOTEL_KB = {
     {id: "hmsp", name: "Hotel Marina By Stay Pattern",  place: "Gulmarg", images: []},
   ],
   sonamarg: [
-    {id: "hatr", name: "Namrose Resorts",               place: "Sonamarg", images: []},
-    {id: "ggr",  name: "Badar Resorts",                 place: "Sonamarg", images: []},
-    {id: "hghv", name: "Country Inn-By Stay Pattern",   place: "Sonamarg", images: []},
-    {id: "hmsp", name: "Hotel Mughal India",            place: "Sonamarg", images: []},
+    {id: "nrs",  name: "Namrose Resorts",               place: "Sonamarg", images: []},
+    {id: "bdr",  name: "Badar Resorts",                 place: "Sonamarg", images: []},
+    {id: "cibsp",name: "Country Inn-By Stay Pattern",   place: "Sonamarg", images: []},
+    {id: "hmi",  name: "Hotel Mughal India",            place: "Sonamarg", images: []},
   ],
 };
 
@@ -390,7 +383,7 @@ function HotelImageManager() {
     }
   };
 
-  const groupLabels = { srinagar: "Srinagar", pahalgam: "Pahalgam", gulmarg: "Gulmarg" };
+  const groupLabels = { srinagar: "Srinagar", pahalgam: "Pahalgam", gulmarg: "Gulmarg", sonamarg: "Sonamarg" };
 
   return (
     <div style={{ marginTop: "40px", backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "14px", overflow: "hidden", fontFamily: "system-ui, sans-serif" }}>
