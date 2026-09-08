@@ -91,6 +91,12 @@ const ROUTE_SCHEDULE_TEMPLATES = {
     { time_slot: "***", description: "Enjoy walks along the roaring Shaliganga river stream." },
     { time_slot: "***", description: "Drive back to Srinagar." }
   ],
+  "Sonamarg to Gulmarg: Overnight Gulmarg": [
+    { time_slot: "***", description: "Gulmarg, the Meadow of Flowers, is renowned for its breathtaking Himalayan landscapes, lush meadows, and world-famous attractions." },
+    { time_slot: "***", description: "Depart from Sonamarg and enjoy a scenic drive towards Gulmarg through the beautiful Kashmir Valley." },
+    { time_slot: "***", description: "Explore Gulmarg's picturesque meadows and enjoy leisure time surrounded by stunning mountain views." },
+    { time_slot: "***", description: "Check in to your Gulmarg hotel and relax for an overnight stay." }
+  ],
   "Airport Drop-Departure": [
     { time_slot: "Departure", description: "Your Kashmir tour concludes with departure from Srinagar International Airport." },
     { time_slot: "***", description: "Breakfast at hotel and complete check-out formalities." },
