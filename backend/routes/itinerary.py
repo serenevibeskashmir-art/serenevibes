@@ -57,8 +57,40 @@ DEFAULT_TIMELINE = [
     },
     {
         "day": 6,
-        "title": "Souvenir Shopping & Departure Transfer",
+        "title": "Extended Exploration & Adventure Activities",
         "date": "Day 6 Plan",
+        "overnight_stay": "Srinagar",
+        "schedule": [
+            {"time_slot": "09:00 AM", "activity_title": "Adventure Activity", "description": "Choose from adventure sports like trekking, fishing, or visit to lesser-known destinations based on your preferences and season."},
+            {"time_slot": "05:00 PM", "activity_title": "Evening Leisure", "description": "Return to hotel and relax. Optional: enjoy traditional Kashmiri tea and pastries."},
+        ],
+    },
+    {
+        "day": 7,
+        "title": "Cultural Immersion & Local Markets",
+        "date": "Day 7 Plan",
+        "overnight_stay": "Srinagar",
+        "schedule": [
+            {"time_slot": "10:00 AM", "activity_title": "Local Market Tour", "description": "Visit traditional bazaars like Lal Chowk and explore Kashmiri handicrafts, carpets, and local artisan workshops."},
+            {"time_slot": "02:00 PM", "activity_title": "Culinary Experience", "description": "Enjoy authentic Kashmiri cuisine at a local restaurant. Learn about traditional dishes and spices."},
+            {"time_slot": "06:00 PM", "activity_title": "Evening Exploration", "description": "Explore the old city streets or visit a local craft workshop."},
+        ],
+    },
+    {
+        "day": 8,
+        "title": "Wellness & Leisure Day",
+        "date": "Day 8 Plan",
+        "overnight_stay": "Srinagar",
+        "schedule": [
+            {"time_slot": "09:00 AM", "activity_title": "Wellness Activities", "description": "Enjoy spa treatments, yoga, or meditation sessions. Optional: Ayurvedic massage or wellness retreat."},
+            {"time_slot": "01:00 PM", "activity_title": "Lunch Break", "description": "Relax at your hotel and enjoy a leisurely lunch with a view of Dal Lake."},
+            {"time_slot": "04:00 PM", "activity_title": "Personal Exploration", "description": "Time for shopping, personal activities, or optional visits to any missed attractions."},
+        ],
+    },
+    {
+        "day": 9,
+        "title": "Souvenir Shopping & Departure Transfer",
+        "date": "Day 9 Plan",
         "overnight_stay": "Departure",
         "schedule": [
             {"time_slot": "11:00 AM", "activity_title": "Souvenir Shopping", "description": "Quick drop at local emporiums for authentic walnuts, saffron, and pashmina shawls before heading to airport terminal entry gates."},
