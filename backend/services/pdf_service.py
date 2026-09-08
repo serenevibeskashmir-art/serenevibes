@@ -1403,7 +1403,7 @@ def generate_pdf(itinerary_data: dict) -> str:
         "ggr":  {"name": "Gateway Resorts",                "place": "Gulmarg",  "images": []},
         "hghv": {"name": "Hotel Grand Hill View",          "place": "Gulmarg",  "images": []},
         "hmsp": {"name": "Hotel Marina By Stay Pattern",   "place": "Gulmarg",  "images": []},
-		"nrs":  {"name: "Namrose Resorts",                 "place": "Sonamarg", "images": []},
+		"nrs":  {"name": "Namrose Resorts",                 "place": "Sonamarg", "images": []},
     	"bdr":  {"name": "Badar Resorts",                   "place": "Sonamarg", "images": []},
    		"cibsp": {"name": "Country Inn-By Stay Pattern",    "place": "Sonamarg", "images": []},
     	"hmi": {"name": "Hotel Mughal India",               "place": "Sonamarg", "images": []},
