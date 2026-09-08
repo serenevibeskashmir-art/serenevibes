@@ -30,6 +30,7 @@ const TRANSIT_OPTIONS = [
   "Gulmarg to Pahalgam: Overnight Pahalgam",
   "Gulmarg to Srinagar: Overnight Srinagar",
   "Sonamarg to Gulmarg: Overnight Gulmarg",
+  "Pahalgam: Local Sightseeing For 2nd Day",
   "Srinagar to Doodhpathri: Overnight Srinagar",
   "Airport Drop-Departure"
 ];
@@ -59,6 +60,12 @@ const ROUTE_SCHEDULE_TEMPLATES = {
     { time_slot: "***", description: "Check-in at Pahalgam hotel and head out for local sightseeing." },
     { time_slot: "***", description: "Visit Aru Valley, Betaab Valley, and Chandanwari via local cabs." }
   ],
+  "Pahalgam: Local Sightseeing For 2nd Day": [
+  { "time_slot": "***", "description": "After breakfast, enjoy the scenic beauty of Pahalgam and take a leisurely walk along the Lidder River." },
+  { "time_slot": "***", "description": "Visit the picturesque Pahalgam market and explore local handicrafts, Kashmiri woollens, and traditional souvenirs." },
+  { "time_slot": "***", "description": "Proceed towards the nearby scenic areas and enjoy breathtaking views of the surrounding pine forests, mountains, and valleys." },
+  { "time_slot": "***", "description": "Later, check out from the hotel and proceed towards Srinagar for your onward journey." }
+],
   "Pahalgam to Srinagar: Overnight Srinagar": [
     { time_slot: "***", description: "Returning to Srinagar retraces the same scenic saffron-field and riverside route from Pahalgam." },
     { time_slot: "***", description: "Proceed towards Srinagar past the saffron fields of Pampore, the marvelous ruins of Awantipur and the village of Bijbehara which remains famous as the breadbasket of Kashmir." },
