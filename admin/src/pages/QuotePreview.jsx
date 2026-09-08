@@ -28,7 +28,7 @@ const TRANSIT_OPTIONS = [
   "Srinagar to Sonamarg: Overnight Srinagar",
   "Srinagar to Sonamarg: Overnight Sonamarg",
   "Pahalgam to Srinagar: Overnight Srinagar",
-  "Pahalgam Sightseeing: Overnight Pahalgam"
+  "Pahalgam Sightseeing: Overnight Pahalgam",
   "Sonamarg to Gulmarg: Overnight Gulmarg",
   "Gulmarg to Pahalgam: Overnight Pahalgam",
   "Gulmarg to Srinagar: Overnight Srinagar",  
