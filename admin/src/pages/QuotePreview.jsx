@@ -22,13 +22,15 @@ const TRANSIT_OPTIONS = [
   "Airport Pickup and Local Sightseeing: Overnight Srinagar",
   "Srinagar Local Sightseeing: Overnight Srinagar",
   "Srinagar to Gulmarg: Overnight Srinagar",
-  "Srinagar to Gulmarg: Overnight Gulmarg",
-  "Gulmarg Stay: Overnight Gulmarg",
+  "Srinagar to Gulmarg: Overnight Gulmarg",  
   "Srinagar to Pahalgam: Overnight Pahalgam",
-  "Pahalgam to Srinagar: Overnight Srinagar",
-  "Srinagar to Sonamarg: Overnight Srinagar",
-  "Gulmarg to Pahalgam: Overnight Pahalgam",
   "Srinagar to Doodhpathri: Overnight Srinagar",
+  "Srinagar to Sonamarg: Overnight Srinagar",
+  "Srinagar to Sonamarg: Overnight Sonamarg",
+  "Pahalgam to Srinagar: Overnight Srinagar",
+  "Sonamarg to Gulmarg: Overnight Gulmarg",
+  "Gulmarg to Pahalgam: Overnight Pahalgam",
+  "Gulmarg to Srinagar: Overnight Srinagar",  
   "Airport Drop-Departure"
 ];
 
