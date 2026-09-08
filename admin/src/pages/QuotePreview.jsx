@@ -132,6 +132,12 @@ const HOTEL_KB = {
     {id: "hghv", name: "Hotel Grand Hill View",         place: "Gulmarg", images: []},
     {id: "hmsp", name: "Hotel Marina By Stay Pattern",  place: "Gulmarg", images: []},
   ],
+  sonamarg: [
+    {id: "hatr", name: "Namrose Resorts",               place: "Sonamarg", images: []},
+    {id: "ggr",  name: "Badar Resorts",                 place: "Sonamarg", images: []},
+    {id: "hghv", name: "Country Inn-By Stay Pattern",   place: "Sonamarg", images: []},
+    {id: "hmsp", name: "Hotel Mughal India",            place: "Sonamarg", images: []},
+  ],
 };
 
 function getHotelGroup(overnight_stay = "") {
