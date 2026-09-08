@@ -28,6 +28,7 @@ const TRANSIT_OPTIONS = [
   "Srinagar to Sonamarg: Overnight Srinagar",
   "Srinagar to Sonamarg: Overnight Sonamarg",
   "Pahalgam to Srinagar: Overnight Srinagar",
+  "Pahalgam Sightseeing: Overnight Pahalgam"
   "Sonamarg to Gulmarg: Overnight Gulmarg",
   "Gulmarg to Pahalgam: Overnight Pahalgam",
   "Gulmarg to Srinagar: Overnight Srinagar",  
@@ -99,6 +100,12 @@ const ROUTE_SCHEDULE_TEMPLATES = {
     { time_slot: "***", description: "Explore Gulmarg's picturesque meadows and enjoy leisure time surrounded by stunning mountain views." },
     { time_slot: "***", description: "Check in to your Gulmarg hotel and relax for an overnight stay." }
   ],
+  "Pahalgam Sightseeing: Overnight Pahalgam": [
+    { "time_slot": "***", "description": "After breakfast, continue with remaining sighseeing in Pahalgam, a picturesque valley surrounded by lush green meadows, pine forests, and snow-capped mountains." },
+    { "time_slot": "***", "description": "Explore the scenic beauty of Pahalgam and enjoy the peaceful views along the Lidder River." },
+    { "time_slot": "***", "description": "Visit popular attractions such as Betaab Valley, Aru Valley, and Chandanwari, subject to local vehicle and weather conditions." },
+    { "time_slot": "***", "description": "Enjoy leisure time in Pahalgam for a nature walk, photography, or optional pony ride before returning to the hotel for an overnight stay." }
+],
   "Airport Drop-Departure": [
     { time_slot: "Departure", description: "Your Kashmir tour concludes with departure from Srinagar International Airport." },
     { time_slot: "***", description: "Breakfast at hotel and complete check-out formalities." },
