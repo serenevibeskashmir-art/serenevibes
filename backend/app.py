@@ -16,7 +16,7 @@ ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PUBLIC_DIR = ROOT_DIR
 PWA_DIR = os.path.join(ROOT_DIR, "public")
 ADMIN_DIST = os.path.join(ROOT_DIR, "admin", "dist")
-OUTPUT_DIR = os.path.join(ROOT_DIR, "output")
+OUTPUT_DIR = os.environ.get("OUTPUT_DIR", "/tmp/output")
 
 
 def create_app():
