@@ -141,7 +141,7 @@ def _build_default_timeline(days):
 def generate_custom_itinerary():
     data = request.get_json() or {}
 
-    output_dir = os.path.join(os.getcwd(), "output")
+    output_dir = os.environ.get("OUTPUT_DIR", "/tmp/output")
     os.makedirs(output_dir, exist_ok=True)
 
     client_name = data.get("client_name", "Valued Client")
