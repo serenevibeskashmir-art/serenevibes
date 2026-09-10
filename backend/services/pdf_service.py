@@ -1202,10 +1202,10 @@ def _page_frame(canvas, doc):
 
 # ─── Main generator ──────────────────────────────────────────────────────────
 def generate_pdf(itinerary_data: dict) -> str:
-    Path("output").mkdir(exist_ok=True)
+    import os as _os; _out = _os.environ.get("OUTPUT_DIR", "/tmp/output"); Path(_out).mkdir(exist_ok=True)
     client_name = str(itinerary_data.get("client_name", "Client"))
     filename  = f"Kashmir_Tour_{client_name.replace(' ', '_')}.pdf"
-    file_path = Path("output") / filename
+    file_path = Path(_out) / filename
 
     doc = SimpleDocTemplate(
         str(file_path),
