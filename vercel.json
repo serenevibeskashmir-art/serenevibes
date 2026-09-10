@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/app.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
+    },
+    {
+      "src": "admin/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "admin/dist"
+      }
+    }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "backend/app.py" },
+    { "src": "/admin/(.*)", "dest": "backend/app.py" },
+    { "src": "/admin", "dest": "backend/app.py" },
+    { "src": "/sw.js", "dest": "backend/app.py" },
+    { "src": "/manifest.json", "dest": "backend/app.py" },
+    { "src": "/icons/(.*)", "dest": "backend/app.py" },
+    { "src": "/output/(.*)", "dest": "backend/app.py" },
+    { "src": "/css/(.*)", "dest": "backend/app.py" },
+    { "src": "/js/(.*)", "dest": "backend/app.py" },
+    { "src": "/(.*)", "dest": "backend/app.py" }
+  ]
+}
