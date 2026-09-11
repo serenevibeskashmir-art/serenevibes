@@ -1,4 +1,5 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "builds": [
     {
@@ -16,16 +17,29 @@
       }
     }
   ],
+  "headers": [
+    {
+      "source": "/manifest.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/manifest+json" },
+        { "key": "Cache-Control", "value": "public, max-age=300, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/sw.js",
+      "headers": [
+        { "key": "Content-Type", "value": "application/javascript; charset=utf-8" },
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Service-Worker-Allowed", "value": "/" }
+      ]
+    }
+  ],
   "routes": [
     { "src": "/api/(.*)", "dest": "backend/app.py" },
     { "src": "/admin/(.*)", "dest": "backend/app.py" },
     { "src": "/admin", "dest": "backend/app.py" },
-    { "src": "/sw.js", "dest": "backend/app.py" },
-    { "src": "/manifest.json", "dest": "backend/app.py" },
-    { "src": "/icons/(.*)", "dest": "backend/app.py" },
     { "src": "/output/(.*)", "dest": "backend/app.py" },
-    { "src": "/css/(.*)", "dest": "backend/app.py" },
-    { "src": "/js/(.*)", "dest": "backend/app.py" },
+    { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "backend/app.py" }
   ]
 }
