@@ -551,5 +551,20 @@
   </footer>
 
   <script src="js/main.js"></script>
+
+  <!-- Progressive Web App service worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+          .then(function (registration) {
+            console.log('Serene Vibes service worker registered:', registration.scope);
+          })
+          .catch(function (error) {
+            console.error('Serene Vibes service worker registration failed:', error);
+          });
+      });
+    }
+  </script>
 </body>
 </html>
