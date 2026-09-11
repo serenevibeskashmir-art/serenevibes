@@ -1,12 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin | Serene Vibes Kashmir</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
+/* Global responsive fixes for the admin app */
+
+.hpm-grid {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 380px;
+}
+
+.hpm-sidebar {
+  border-right: 1px solid #e2e8f0;
+  overflow-y: auto;
+  max-height: 520px;
+}
+
+@media (max-width: 640px) {
+  .hpm-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hpm-sidebar {
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    max-height: 240px;
+  }
+}
