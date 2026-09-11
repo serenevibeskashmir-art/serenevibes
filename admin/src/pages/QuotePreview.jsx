@@ -600,7 +600,7 @@ export default function QuotePreview({ quote }) {
           <h3 style={styles.dayTitle}>📍 Day {timeline[activeDay].day}: {timeline[activeDay].title || timeline[activeDay].date}</h3>
 
           {/* Route selector */}
-          <div style={{ marginBottom: "15px" }}>
+          <div id="day-route-select" style={{ marginBottom: "15px" }}>
             <label style={{ fontWeight: "bold", color: "#334155", display: "block", marginBottom: "5px" }}>🚗 Select Day Route / Travel Option:</label>
             <select
               value={timeline[activeDay]?.transit_route || ""}
