@@ -407,9 +407,9 @@ function HotelImageManager() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "240px 1fr", minHeight: "380px" }}>
+      <div className="hpm-grid">
         {/* Left: hotel list */}
-        <div style={{ borderRight: "1px solid #e2e8f0", overflowY: "auto", maxHeight: "520px" }}>
+        <div className="hpm-sidebar">
           {Object.entries(groupLabels).map(([groupKey, label]) => (
             <div key={groupKey}>
               <div style={{ padding: "8px 14px", fontSize: "0.7rem", fontWeight: "800", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.6px", backgroundColor: "#f8fafc", borderBottom: "1px solid #f1f5f9" }}>
