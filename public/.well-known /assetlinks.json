@@ -2,7 +2,7 @@
       "relation": ["delegate_permission/common.handle_all_urls"],
       "target": {
         "namespace": "android_app",
-        "package_name": "com.onrender.serenevibeskashmir.twa",
-        "sha256_cert_fingerprints": ["D6:DF:79:DF:22:4B:CB:1F:8E:AF:65:CE:B8:1F:50:B2:98:A3:B7:AA:50:F7:AB:5A:B1:2F:7A:79:55:BA:D6:18"]
+        "package_name": "app.vercel.serenevibes.twa",
+        "sha256_cert_fingerprints": ["44:ED:35:0F:67:E1:86:AC:63:3E:0D:65:F9:14:FE:F0:ED:5B:0E:EB:44:9D:EC:0F:6B:DC:0E:34:65:00:83:3B"]
       }
     }]
