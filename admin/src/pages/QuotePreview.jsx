@@ -634,19 +634,24 @@ export default function QuotePreview({ quote }) {
           {/* Hotel city picker */}
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "15px" }}>
             <label style={{ fontWeight: "bold", color: "#334155", margin: 0 }}>🏠 Assign Hotel/Stay:</label>
-            <select
-              value={timeline[activeDay]?.overnight_stay || "Srinagar"}
-              onChange={(e) => {
-                const updated = [...timeline];
-                if (updated[activeDay]) { updated[activeDay].overnight_stay = e.target.value; setTimeline(updated); setHotelSelections(prev => ({ ...prev, [activeDay]: null })); }
-              }}
-              style={{ padding: "4px 8px", borderRadius: "4px", border: "1px solid #cbd5e1", backgroundColor: "#fff", fontSize: "0.85rem", fontWeight: "bold", color: "#1e293b", cursor: "pointer" }}
-            >
-              <option value="Srinagar">Srinagar</option>
-              <option value="Pahalgam">Pahalgam</option>
-              <option value="Gulmarg">Gulmarg</option>
-              <option value="Sonamarg">Sonamarg</option>
-            </select>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+              {["Srinagar", "Pahalgam", "Gulmarg", "Sonamarg"].map((city) => {
+                const isActive = (timeline[activeDay]?.overnight_stay || "Srinagar") === city;
+                return (
+                  <button
+                    key={city}
+                    type="button"
+                    onClick={() => {
+                      const updated = [...timeline];
+                      if (updated[activeDay]) { updated[activeDay].overnight_stay = city; setTimeline(updated); setHotelSelections(prev => ({ ...prev, [activeDay]: null })); }
+                    }}
+                    style={{ padding: "6px 16px", borderRadius: "20px", border: isActive ? "2px solid #2563eb" : "1px solid #cbd5e1", backgroundColor: isActive ? "#2563eb" : "#fff", fontSize: "0.85rem", fontWeight: "bold", color: isActive ? "#fff" : "#1e293b", cursor: "pointer", transition: "all 0.15s" }}
+                  >
+                    {city}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Hotel dropdown */}
