@@ -50,6 +50,11 @@ export default function LeadForm({ onGenerated }) {
       }
 
       onGenerated(result);
+
+      // Scroll down to reveal the generated itinerary once it renders
+      setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      }, 150);
     } catch (err) {
       setError(err.message);
     } finally {
