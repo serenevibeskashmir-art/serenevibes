@@ -1363,6 +1363,9 @@ def generate_pdf(itinerary_data: dict) -> str:
         block.append(Spacer(1, 5*mm))
         story.append(KeepTogether(block))
 
+    # Rule 5: Itinerary occupies pages 2–3; force next section to new page
+    story.append(PageBreak())
+
     # ── Hotel data + selections (used by both the photo section and the
     #    Hotel Assignments table below) ─────────────────────────────────────
     # NOTE: "images" holds 2+ direct, hotlinkable photo URLs (or local file paths
@@ -1442,17 +1445,18 @@ def generate_pdf(itinerary_data: dict) -> str:
             selected_hotel_ids.append(str(hid))
 
     if selected_hotel_ids:
-        # ── Dynamic photo height so ALL hotels always fit on ONE page ─────
-        # A4 usable body height = 257mm (page 297 - top margin 18 - bottom 22).
-        # Fixed overhead: PageBreak resets to top, SectionTitle=12mm, spacer=4mm → 16mm
-        # Per hotel: header bar=8mm + spacer below=3mm = 11mm overhead each strip.
-        # Remaining mm shared equally across all photo slots.
-        # Hard floor 28mm (still legible), hard ceiling 52mm.
+        # ── Rule 6: ALL hotels (up to 3) must fit on ONE page ─────────────
+        # A4 usable body height ≈ 257mm (297 - top margin 18 - bottom footer 22).
+        # Fixed overhead per page: SectionTitle≈14mm + spacer 4mm = 18mm.
+        # Per-hotel overhead: header bar 8mm + spacer 3mm = 11mm each.
+        # Remaining height split equally across hotels for photos.
+        # Hard floor 26mm (legible), hard ceiling 55mm.
         _n = len(selected_hotel_ids)
-        _overhead_total = 16 + _n * 11   # title block + per-hotel overheads
-        _photo_h_mm = max(28, min(52, (257 - _overhead_total) / _n))
+        _usable_body_h = 257   # mm
+        _overhead_total = 18 + _n * 11
+        _photo_h_mm = max(26, min(55, (_usable_body_h - _overhead_total) / _n))
 
-        story.append(PageBreak())
+        # Build all strips into one KeepTogether block so they never split
         photo_block = [
             SectionTitle(usable_w, "HOTEL REFERENCE PHOTOS", icon=""),
             Spacer(1, 4*mm),
@@ -1464,12 +1468,16 @@ def generate_pdf(itinerary_data: dict) -> str:
                 photo_h=_photo_h_mm * mm
             ))
             photo_block.append(Spacer(1, 3*mm))
+        # KeepTogether forces the entire photos section onto one page.
+        # If it doesn't fit on the current page it triggers its own page break.
         story.append(KeepTogether(photo_block))
 
-    # ── 4. Hotel Assignments Table ────────────────────────────────────────────
+    # ── 4–6. Hotel Assignments + Inclusions/Exclusions + Payment Schedule ───────
+    # Rule 1: These three sections always live on ONE page together.
     story.append(PageBreak())
-    story.append(SectionTitle(usable_w, "HOTEL ASSIGNMENTS", icon=""))
-    story.append(Spacer(1, 4*mm))
+    page_block_1 = []   # collect all three sections into this list
+    page_block_1.append(SectionTitle(usable_w, "HOTEL ASSIGNMENTS", icon=""))
+    page_block_1.append(Spacer(1, 4*mm))
 
     # Header row
     hotel_header = [
@@ -1553,8 +1561,8 @@ def generate_pdf(itinerary_data: dict) -> str:
         # Left accent column
         ("BACKGROUND",    (0, 1), (0, -1), SKY_LIGHT),
     ]))
-    story.append(hotel_table)
-    story.append(Spacer(1, 7*mm))
+    page_block_1.append(hotel_table)
+    page_block_1.append(Spacer(1, 5*mm))
 
     # ── 5. Inclusions / Exclusions ────────────────────────────────────────────
     inc_items = [
@@ -1625,15 +1633,15 @@ def generate_pdf(itinerary_data: dict) -> str:
         ("VALIGN",     (0,0),(-1,-1), "TOP"),
     ]))
 
-    story.append(SectionTitle(usable_w, "INCLUSIONS & EXCLUSIONS", icon=""))
-    story.append(Spacer(1, 4*mm))
-    story.append(inc_header)
-    story.append(inc_body)
-    story.append(Spacer(1, 7*mm))
+    page_block_1.append(SectionTitle(usable_w, "INCLUSIONS & EXCLUSIONS", icon=""))
+    page_block_1.append(Spacer(1, 3*mm))
+    page_block_1.append(inc_header)
+    page_block_1.append(inc_body)
+    page_block_1.append(Spacer(1, 5*mm))
 
     # ── 6. Payment Schedule ───────────────────────────────────────────────────
-    story.append(SectionTitle(usable_w, "PAYMENT SCHEDULE", icon=""))
-    story.append(Spacer(1, 4*mm))
+    page_block_1.append(SectionTitle(usable_w, "PAYMENT SCHEDULE", icon=""))
+    page_block_1.append(Spacer(1, 3*mm))
 
     # Calculate payment milestones dynamically (25% / 25% / 50% split per policy)
     total_amt   = int(custom_cost) if str(custom_cost).replace(".", "").isdigit() else 0
@@ -1704,24 +1712,27 @@ def generate_pdf(itinerary_data: dict) -> str:
         ("RIGHTPADDING",  (0, 0), (-1, -1), 8),
         ("VALIGN",        (0, 0), (-1, -1), "MIDDLE"),
     ]))
-    story.append(pay_table)
-    story.append(Spacer(1, 3*mm))
+    page_block_1.append(pay_table)
+    page_block_1.append(Spacer(1, 3*mm))
 
     # Bank details sub-note
     bank_note_style = ParagraphStyle("bn", fontName="Helvetica", fontSize=7.5,
                                      textColor=GRAY_600, leading=11)
-    story.append(Paragraph(
+    page_block_1.append(Paragraph(
         "<b>Bank Transfer Details:</b>  Account Name: Serene Vibes Kashmir  |  "
         "Bank: J&amp;K Bank  |  Account No: XXXXXXXXXX  |  IFSC: JAKA0XXXXXX  |  "
         "UPI: serenevibeskashmir@upi",
         bank_note_style
     ))
-    story.append(Spacer(1, 7*mm))
+    # Flush page_block_1 (Hotel Assignments + Inc/Exc + Payment) to story
+    story.append(KeepTogether(page_block_1))
 
-    # ── 7. Cancellation Policy ────────────────────────────────────────────────
+    # ── 7–9. Cancellation Policy + Travel Notes + Contact Card ────────────────
+    # Rule 2: These three sections always live on ONE page together.
     story.append(PageBreak())
-    story.append(SectionTitle(usable_w, "CANCELLATION POLICY", icon=""))
-    story.append(Spacer(1, 4*mm))
+    page_block_2 = []
+    page_block_2.append(SectionTitle(usable_w, "CANCELLATION POLICY", icon=""))
+    page_block_2.append(Spacer(1, 4*mm))
 
     canc_header_st = ParagraphStyle("cnh", fontName="Helvetica-Bold",
                                     fontSize=8.5, textColor=WHITE)
@@ -1771,12 +1782,12 @@ def generate_pdf(itinerary_data: dict) -> str:
         ("RIGHTPADDING",  (0, 0), (-1, -1), 8),
         ("VALIGN",        (0, 0), (-1, -1), "MIDDLE"),
     ]))
-    story.append(canc_table)
-    story.append(Spacer(1, 7*mm))
+    page_block_2.append(canc_table)
+    page_block_2.append(Spacer(1, 5*mm))
 
     # ── 8. Important Travel Notes ─────────────────────────────────────────────
-    story.append(SectionTitle(usable_w, "IMPORTANT TRAVEL NOTES", icon=""))
-    story.append(Spacer(1, 4*mm))
+    page_block_2.append(SectionTitle(usable_w, "IMPORTANT TRAVEL NOTES", icon=""))
+    page_block_2.append(Spacer(1, 4*mm))
 
     note_heading_st = ParagraphStyle("noh", fontName="Helvetica-Bold",
                                      fontSize=8, textColor=GOLD, spaceBefore=2, spaceAfter=1)
@@ -1846,12 +1857,12 @@ def generate_pdf(itinerary_data: dict) -> str:
         ("LEFTPADDING",  (1,0),(1,-1), 12),
         ("RIGHTPADDING", (1,0),(1,-1), 10),
     ]))
-    story.append(notes_outer)
-    story.append(Spacer(1, 7*mm))
+    page_block_2.append(notes_outer)
+    page_block_2.append(Spacer(1, 5*mm))
 
     # ── 9. Contact Card ───────────────────────────────────────────────────────
-    story.append(SectionTitle(usable_w, "GET IN TOUCH WITH US", icon=""))
-    story.append(Spacer(1, 4*mm))
+    page_block_2.append(SectionTitle(usable_w, "GET IN TOUCH WITH US", icon=""))
+    page_block_2.append(Spacer(1, 3*mm))
 
     contact_label_st = ParagraphStyle("ctl", fontName="Helvetica-Bold",
                                       fontSize=7.5, textColor=GRAY_600)
@@ -1904,10 +1915,11 @@ def generate_pdf(itinerary_data: dict) -> str:
         ("RIGHTPADDING", (0,0),(-1,-1), 10),
         ("VALIGN",       (0,0),(-1,-1), "MIDDLE"),
     ]))
-    story.append(contact_table)
-    story.append(Spacer(1, 7*mm))
+    page_block_2.append(contact_table)
+    # Flush page_block_2 (Cancellation + Travel Notes + Contact) to story
+    story.append(KeepTogether(page_block_2))
 
-    # ── 10. Terms & Conditions — full last page ────────────────────────────────
+    # ── 10. Terms & Conditions — always on its own page (Rule 3) ──────────────
     story.append(PageBreak())
     story.append(SectionTitle(usable_w, "TERMS & CONDITIONS", icon=""))
     story.append(Spacer(1, 5*mm))
