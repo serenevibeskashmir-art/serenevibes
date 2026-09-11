@@ -649,17 +649,18 @@ export default function QuotePreview({ quote }) {
             </select>
           </div>
 
-          {/* Hotel cards */}
-          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "8px" }}>
-            {(HOTEL_KB[getHotelGroup(timeline[activeDay].overnight_stay)] || HOTEL_KB["srinagar"]).map((hotel) => {
-              const isSelected = hotelSelections[activeDay] === hotel.id;
-              return (
-                <div key={hotel.id} onClick={() => setHotelSelections(prev => ({ ...prev, [activeDay]: hotel.id }))} style={{ padding: "8px 14px", borderRadius: "6px", border: isSelected ? "2px solid #6366f1" : "1px solid #cbd5e1", backgroundColor: isSelected ? "#f5f3ff" : "#fff", cursor: "pointer", fontSize: "0.85rem", fontWeight: isSelected ? "700" : "500", color: isSelected ? "#4338ca" : "#334155", transition: "all 0.15s" }}>
-                  {isSelected ? "✓ " : ""}{hotel.name}
-                  <div style={{ fontSize: "0.7rem", color: "#94a3b8", marginTop: "2px" }}>📍 {hotel.place} · B&D Included</div>
-                </div>
-              );
-            })}
+          {/* Hotel dropdown */}
+          <div style={{ marginBottom: "8px" }}>
+            <select
+              value={hotelSelections[activeDay] || ""}
+              onChange={(e) => setHotelSelections(prev => ({ ...prev, [activeDay]: e.target.value }))}
+              style={{ width: "100%", maxWidth: "400px", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#fff", fontSize: "0.85rem", fontWeight: "500", color: "#1e293b", cursor: "pointer" }}
+            >
+              <option value="">-- Choose Hotel --</option>
+              {(HOTEL_KB[getHotelGroup(timeline[activeDay].overnight_stay)] || HOTEL_KB["srinagar"]).map((hotel) => (
+                <option key={hotel.id} value={hotel.id}>{hotel.name} — {hotel.place} · B&D Included</option>
+              ))}
+            </select>
           </div>
 
           {/* Activity list */}
