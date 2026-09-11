@@ -1558,18 +1558,22 @@ def generate_pdf(itinerary_data: dict) -> str:
 
     # ── 5. Inclusions / Exclusions ────────────────────────────────────────────
     inc_items = [
-        "Private cab for all airport transfers and sightseeing",
-        "Accommodation as per hotel assignments (Breakfast + Dinner included)",
-        "All toll charges, parking fees, and driver allowances",
-        "Houseboat stay on Dal Lake with Shikara ride",
-        "24/7 on-call support by our Kashmir travel coordinator",
+        "01 SEDAN for all tours and transfers including pick up and drop",
+        "Sightseeing tours as per the itinerary by individual car",
+        "Stay at the hotels mentioned in the itinerary or similar",
+        "Meals - Breakfast and Dinner",
+        "Celebration Cake",
+        "Accommodation on triple sharing basis",
+        "01 Hour complimentary Shikara ride",
+        "Toll taxes, fuel charges, parking fees and driver's allowance",
     ]
     exc_items = [
-        "Airfare / Train fare to and from Srinagar",
-        "Lunch and mid-day snacks",
-        "Personal expenses, tips, and porterage",
-        "Adventure activities (Gondola, trekking, etc.)",
-        "Any costs arising from natural calamities or road blockades",
+        "Any Airfare or Train fare",
+        "Entrances, Lunch and Snacks",
+        "Activities: River Rafting, Paragliding and Skiing, Gondola (Phase I INR 800 & Phase II INR 1000 per person)",
+        "All personal expenses such as tips, laundry, telephone bills, beverages and camera fees",
+        "Union cabs for ABC Pahalgam and snow chain vehicle if required for Gulmarg",
+        "Any claim due to road blocks, curfews, accidents etc.",
     ]
 
     def bullet_list(items, icon, color):
@@ -1631,10 +1635,11 @@ def generate_pdf(itinerary_data: dict) -> str:
     story.append(SectionTitle(usable_w, "PAYMENT SCHEDULE", icon=""))
     story.append(Spacer(1, 4*mm))
 
-    # Calculate payment milestones dynamically
-    total_amt = int(custom_cost) if str(custom_cost).replace(".", "").isdigit() else 0
-    token_amt  = round(total_amt * 0.30)
-    balance_amt = total_amt - token_amt
+    # Calculate payment milestones dynamically (25% / 25% / 50% split per policy)
+    total_amt   = int(custom_cost) if str(custom_cost).replace(".", "").isdigit() else 0
+    inst1_amt   = round(total_amt * 0.25)
+    inst2_amt   = round(total_amt * 0.25)
+    inst3_amt   = total_amt - inst1_amt - inst2_amt
 
     pay_header_style = ParagraphStyle("pyh", fontName="Helvetica-Bold",
                                       fontSize=8.5, textColor=WHITE, alignment=TA_CENTER)
@@ -1654,14 +1659,19 @@ def generate_pdf(itinerary_data: dict) -> str:
     ]]
 
     pay_data = [
-        ("Token / Advance (30%)",
-         f"INR {token_amt:,}" if total_amt else "As Quoted",
-         "At time of booking",
+        ("1st Instalment (25%)",
+         f"INR {inst1_amt:,}" if total_amt else "As Quoted",
+         "On Confirmation",
          "NEFT / UPI / Cheque",
          "Pending"),
-        ("Balance Payment (70%)",
-         f"INR {balance_amt:,}" if total_amt else "As Quoted",
-         "7 days before departure",
+        ("2nd Instalment (25%)",
+         f"INR {inst2_amt:,}" if total_amt else "As Quoted",
+         "A month before travel date",
+         "NEFT / UPI / Cheque",
+         "Pending"),
+        ("3rd Instalment (50%)",
+         f"INR {inst3_amt:,}" if total_amt else "As Quoted",
+         "On Arrival",
          "NEFT / UPI / Cheque",
          "Pending"),
     ]
